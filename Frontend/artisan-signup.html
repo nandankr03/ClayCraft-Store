@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Registration | ClayCraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-box">
+
+            <a href="index.html" class="auth-logo" style="display:flex; align-items:center; justify-content:center; gap:12px; text-decoration:none; margin-bottom:24px; white-space:nowrap;">
+  <img src="Images/pottery_hands_logo.png" alt="ClayCraft Logo" style="height:45px; width:45px; border-radius:8px; object-fit:cover; flex-shrink:0;">
+  <span style="font-family:'Caveat', cursive; font-size:36px; font-weight:700; background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display:inline-block;">ClayCraft</span>
+</a>
+            <h2 class="title">Artisan Registration</h2>
+            <p class="subtitle">Showcase and sell your beautiful crafts across the world</p>
+            <form onsubmit="handleAuth(event, 'signup', 'artisan')">
+                <div class="auth-form-group">
+                    <input type="text" id="fullName" placeholder="Full Name/Business Name" required />
+                </div>
+                <div class="auth-form-group">
+                    <input type="email" id="email" placeholder="Email Address" required />
+                </div>
+                <div class="auth-form-group">
+                    <input type="password" id="password" placeholder="Password" required />
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: -10px; margin-bottom: 20px;">
+                    <input type="checkbox" id="showPassword" onclick="togglePasswordVisibility('password')" style="width: auto; cursor: pointer;">
+                    <label for="showPassword" style="font-size: 0.9rem; color: #555; cursor: pointer;">Show Password</label>
+                </div>
+                <div class="auth-form-group" id="otpGroup" style="display: none;">
+                    <input type="text" id="otp" placeholder="Enter 6-digit OTP" />
+                    <div style="text-align: right; margin-top: 5px;">
+                        <button type="button" id="resendOtpBtn" onclick="resendOtp(event, 'signup')" style="background:none; border:none; color:#d68c45; cursor:pointer; font-size:0.9rem;">Resend OTP</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" id="signupBtn">Send OTP</button>
+            </form>
+            <p class="switch-text">Already registered? <a href="artisan-login.html">Login</a></p>
+        </div>
+    </div>
+    <script src="authLogic.js"></script>
+</body>
+</html>

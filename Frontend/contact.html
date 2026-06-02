@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | ClayCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('Images/Handmade Clay & Ceramic Collection.jpg') no-repeat center center/cover;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+    }
+    .contact-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 48px;
+    }
+    .contact-container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    .contact-info-box {
+      flex: 1;
+      min-width: 300px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .contact-form-box {
+      flex: 2;
+      min-width: 300px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .contact-info-box h3, .contact-form-box h3 {
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 20px;
+      color: #222;
+      font-size: 24px;
+    }
+    .contact-info-box p {
+      font-family: 'Inter', sans-serif;
+      color: #555;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: #333;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #e63946;
+    }
+    .submit-btn {
+      background: #e63946;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .submit-btn:hover {
+      background: #d62828;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+          <nav id="mainNav">
+    <div class="logo" onclick="window.location='index.html'" style="cursor:pointer;">
+      <img src="Images/pottery_hands_logo.png" alt="Claycraft Logo" style="height:40px; width:40px; border-radius:6px; object-fit:cover;">
+      <span style="background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">ClayCraft</span>
+    </div>
+
+    <!-- Desktop search bar -->
+    <div class="search-bar">
+      <div class="search-wrapper" style="max-width: 500px; position: relative;">
+        <input type="text" id="searchInput" placeholder="Search for products">
+        <span id="clearSearchBtn" onclick="document.getElementById('searchInput').value=''; this.style.display='none'; document.getElementById('searchInput').focus();" style="display:none; position:absolute; right: 55px; top: 50%; transform: translateY(-50%); cursor:pointer; font-size: 14px; color:#999; padding:5px;">&#10006;</span>
+        <button id="searchBtn" onclick="triggerSearch(document.getElementById('searchInput').value)" style="font-size:18px; display:flex; align-items:center; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <ul id="navLinks" class="nav-main-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      
+      <!-- Logged Out Links -->
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Login &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-login.html">Customer Login</a>
+          <a href="artisan-login.html">Artisan Login</a>
+          <a href="admin-login.html" id="adminLoginLink">Admin Login</a>
+        </div>
+      </li>
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Register &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-signup.html">Customer</a>
+          <a href="artisan-signup.html">Artisan</a>
+        </div>
+      </li>
+      
+      <!-- Logged In Links -->
+      <li class="dropdown logged-in-only" style="display:none;">
+        <a href="#" id="userNameDisplay" class="dropdown-toggle">Hi, User &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="profile.html">My Profile</a>
+          <a href="myOrder.html">My Orders</a>
+          <a href="wishlist.html" class="cart-link">Wishlist <span id="wishlist-count-dropdown" class="badge">0</span></a>
+          <a href="cart.html" class="cart-link">Cart 🛒 <span id="cart-count-dropdown" class="badge">0</span></a>
+          <a href="#" onclick="logoutUser(event)">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Right-side icons: search toggle + hamburger -->
+    <div style="display:flex; align-items:center; gap:6px;">
+      <!-- Mobile search icon -->
+      <button class="search-toggle-btn" id="searchToggleBtn" aria-label="Toggle search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1 0 4.65 4.65a7 7 0 0 0 12 12z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile search bar (slides in below nav) -->
+  
+  </div>
+
+  <section class="contact-hero">
+    <div>
+      <h1>Get In Touch</h1>
+    </div>
+  </section>
+
+  <section class="contact-container">
+    <div class="contact-info-box">
+      <h3>Contact Information</h3>
+      <p><strong>Address:</strong><br>123 Artisan Valley,<br>Craftsman District, 400001</p>
+      <p><strong>Email:</strong><br>support@claypottery.com</p>
+      <p><strong>Phone:</strong><br>+91 9334735906</p>
+      <p style="margin-top: 30px;">We're here to help! Whether you have a question about an order, want to collaborate, or just want to say hi, drop us a message.</p>
+    </div>
+    
+    <div class="contact-form-box">
+      <h3>Send us a Message</h3>
+      <form id="contactForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="contactName" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="contactEmail" required placeholder="john@example.com">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="contactMessage" rows="5" required placeholder="How can we help you?"></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+      <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+          if(window.innerWidth <= 768) { if(window.innerWidth <= 768) { e.preventDefault(); } }
+          const btn = this.querySelector('button');
+          btn.textContent = 'Sending...';
+          btn.disabled = true;
+
+          const name = document.getElementById('contactName').value;
+          const email = document.getElementById('contactEmail').value;
+          const message = document.getElementById('contactMessage').value;
+
+          try {
+            const res = await fetch('http://localhost:5000/api/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, message })
+            });
+            const data = await res.json();
+            if (data.success) {
+              alert('Message sent successfully! The admin has received your message.');
+              this.reset();
+            } else {
+              alert('Failed to send message. Please try again.');
+            }
+          } catch(err) {
+            console.error(err);
+            alert('Error connecting to server.');
+          } finally {
+            btn.textContent = 'Send Message';
+            btn.disabled = false;
+          }
+        });
+      </script>
+    </div>
+  </section>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-col brand">
+        <h3>ClayCraft</h3>
+        <p>Authentic handmade crafts — directly from artisans to your home.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="index.html#home-decor">Home Decor</a></li>
+          <li><a href="index.html#new-arrivals">New Arrivals</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Socials</h3>
+        <div class="social-links-list">
+          <a href="https://instagram.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            @claypottery2026
+          </a>
+          <a href="https://facebook.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            @claypottery2026
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 ClayCraft | Designed with @claypottery2026</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Include minimal scripts for nav functionality
+    
+  </script>
+</body>
+</html>

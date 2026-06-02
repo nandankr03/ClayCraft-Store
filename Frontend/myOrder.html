@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your artisan purchases — My Orders at ClayCraft.">
+  <title>My Orders - ClayCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Orders Page ── */
+    .orders-page { padding: 60px 40px; min-height: calc(100vh - 72px); background: #f8f8f8; }
+
+    .orders-header { margin-bottom: 40px; }
+    .orders-header h1 { font-family:"Poppins",sans-serif; font-size:36px; font-weight:800; color:#1a1a1a; }
+    .orders-header h1 span { color:#e63946; }
+    .orders-header p { color:#888; font-size:15px; margin-top:8px; }
+
+    /* ── Order Card ── */
+    .orders-list { display: flex; flex-direction: column; gap: 24px; max-width: 860px; }
+
+    .order-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid #eaeaea;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: box-shadow 0.3s;
+    }
+    .order-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.09); }
+
+    .order-header {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+      padding: 18px 24px;
+      background: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .order-id    { font-family:"Poppins",sans-serif; font-weight:700; font-size:15px; color:#1a1a1a; }
+    .order-date  { font-size:13px; color:#888; margin-left: auto; }
+
+    .order-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    }
+    .status-processing { background:#fff3cd; color:#856404; }
+    .status-shipped    { background:#cce5ff; color:#004085; }
+    .status-delivered  { background:#d4edda; color:#155724; }
+    .status-cancelled  { background:#f8d7da; color:#721c24; }
+
+    .order-body { padding: 22px 24px; }
+
+    /* Items list in card */
+    .order-items-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+    .order-item-row { display: flex; align-items: center; gap: 14px; }
+    .order-item-row img { width:64px; height:64px; object-fit:cover; border-radius:10px; border:1px solid #eee; flex-shrink:0; }
+    .order-item-info h3 { font-family:"Poppins",sans-serif; font-size:15px; font-weight:600; color:#222; margin-bottom:4px; }
+    .order-item-info p  { font-size:13px; color:#888; margin:2px 0; }
+    .order-price { font-size:15px; font-weight:800; color:#e63946; margin-left: auto; white-space:nowrap; }
+
+    .order-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid #f0f0f0; padding-top: 14px; margin-top: 4px;
+    }
+    .order-total-row span { font-size:14px; color:#555; }
+    .order-total-row strong { font-family:"Poppins",sans-serif; font-size:18px; color:#e63946; }
+
+    .order-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+
+    .order-btn {
+      padding: 10px 22px; border: none; border-radius: 9px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family:"Inter",sans-serif; transition: all 0.25s;
+    }
+    .primary-btn   { background:#e63946; color:#fff; box-shadow:0 3px 10px rgba(230,57,70,0.2); }
+    .primary-btn:hover   { background:#d62828; transform:translateY(-2px); }
+    .secondary-btn { background:#f0f0f0; color:#333; }
+    .secondary-btn:hover { background:#ddd; }
+
+    /* ── Tracking Modal ── */
+    .track-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      z-index:9990; display:flex; align-items:center; justify-content:center;
+    }
+    .track-modal {
+      background:#fff; border-radius:24px; padding:40px 36px;
+      max-width:500px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.15);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .track-modal h2 { font-family:"Poppins",sans-serif; font-size:22px; font-weight:800; margin-bottom:6px; }
+    .track-modal .track-sub { color:#888; font-size:14px; margin-bottom:28px; }
+
+    .track-steps { display:flex; flex-direction:column; gap:0; }
+    .track-step { display:flex; gap:16px; }
+    .step-line { display:flex; flex-direction:column; align-items:center; }
+    .step-dot {
+      width:20px; height:20px; border-radius:50%; border:2.5px solid #e0e0e0;
+      background:#fff; display:flex; align-items:center; justify-content:center;
+      font-size:10px; flex-shrink:0; transition:all 0.3s;
+    }
+    .step-dot.done  { border-color:#2ecc71; background:#2ecc71; }
+    .step-dot.active{ border-color:#e63946; background:#e63946; }
+    .step-connector { width:2px; flex:1; background:#e0e0e0; margin:4px 0; min-height:30px; }
+    .step-connector.done { background:#2ecc71; }
+    .step-body { padding-bottom:24px; }
+    .step-body h4 { font-size:14px; font-weight:700; color:#222; margin-bottom:3px; }
+    .step-body p  { font-size:12px; color:#999; }
+    .step-body.active h4 { color:#e63946; }
+
+    .track-close {
+      width:100%; margin-top:10px; padding:13px; background:#1a1a1a; color:#fff;
+      border:none; border-radius:10px; font-size:15px; font-weight:700;
+      cursor:pointer; font-family:"Inter",sans-serif; transition:background 0.3s;
+    }
+    .track-close:hover { background:#e63946; }
+
+    /* ── Empty State ── */
+    .empty-orders { text-align:center; padding:80px 20px; }
+    .empty-orders .empty-icon { font-size:70px; margin-bottom:20px; display:block; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+    .empty-orders h2 { font-family:"Poppins",sans-serif; font-size:26px; color:#333; margin-bottom:10px; }
+    .empty-orders p  { color:#888; font-size:15px; margin-bottom:28px; }
+    .empty-orders a  {
+      display:inline-block; background:#e63946; color:#fff; padding:13px 32px;
+      border-radius:50px; font-weight:600; font-size:15px; text-decoration:none;
+      box-shadow:0 4px 14px rgba(230,57,70,0.3); transition:all 0.3s;
+    }
+    .empty-orders a:hover { background:#c92a37; transform:translateY(-3px); }
+
+    @media(max-width:600px) {
+      .orders-page { padding:36px 14px; }
+      .order-actions { flex-direction:column; }
+      .order-btn { width:100%; text-align:center; }
+      .track-modal { padding:28px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+          <nav id="mainNav">
+    <div class="logo" onclick="window.location='index.html'" style="cursor:pointer;">
+      <img src="Images/pottery_hands_logo.png" alt="Claycraft Logo" style="height:40px; width:40px; border-radius:6px; object-fit:cover;">
+      <span style="background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">ClayCraft</span>
+    </div>
+
+    <!-- Desktop search bar -->
+    <div class="search-bar">
+      <div class="search-wrapper" style="max-width: 500px; position: relative;">
+        <input type="text" id="searchInput" placeholder="Search for products">
+        <span id="clearSearchBtn" onclick="document.getElementById('searchInput').value=''; this.style.display='none'; document.getElementById('searchInput').focus();" style="display:none; position:absolute; right: 55px; top: 50%; transform: translateY(-50%); cursor:pointer; font-size: 14px; color:#999; padding:5px;">&#10006;</span>
+        <button id="searchBtn" onclick="triggerSearch(document.getElementById('searchInput').value)" style="font-size:18px; display:flex; align-items:center; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <ul id="navLinks" class="nav-main-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      
+      <!-- Logged Out Links -->
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Login &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-login.html">Customer Login</a>
+          <a href="artisan-login.html">Artisan Login</a>
+          <a href="admin-login.html" id="adminLoginLink">Admin Login</a>
+        </div>
+      </li>
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Register &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-signup.html">Customer</a>
+          <a href="artisan-signup.html">Artisan</a>
+        </div>
+      </li>
+      
+      <!-- Logged In Links -->
+      <li class="dropdown logged-in-only" style="display:none;">
+        <a href="#" id="userNameDisplay" class="dropdown-toggle">Hi, User &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="profile.html">My Profile</a>
+          <a href="myOrder.html">My Orders</a>
+          <a href="wishlist.html" class="cart-link">Wishlist <span id="wishlist-count-dropdown" class="badge">0</span></a>
+          <a href="cart.html" class="cart-link">Cart 🛒 <span id="cart-count-dropdown" class="badge">0</span></a>
+          <a href="#" onclick="logoutUser(event)">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Right-side icons: search toggle + hamburger -->
+    <div style="display:flex; align-items:center; gap:6px;">
+      <!-- Mobile search icon -->
+      <button class="search-toggle-btn" id="searchToggleBtn" aria-label="Toggle search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1 0 4.65 4.65a7 7 0 0 0 12 12z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile search -->
+  
+  </div>
+
+  <!-- Orders Content -->
+  <div class="orders-page">
+    <div class="orders-header">
+      <h1>My <span>Orders</span></h1>
+      <p>Track all your handcrafted purchases in one place</p>
+    </div>
+    <div class="orders-list" id="ordersList">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-col brand">
+        <h3>ClayCraft</h3>
+        <p>Authentic handmade crafts — directly from artisans to your home.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#home-decor">Home Decor</a></li>
+          <li><a href="index.html#new-arrivals">New Arrivals</a></li>
+          <li><a href="cart.html">Shopping Cart</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Socials</h3>
+        <div class="social-links-list">
+          <a href="https://instagram.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            @claypottery2026
+          </a>
+          <a href="https://facebook.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            @claypottery2026
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 ClayCraft | Designed with ❤️</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function getOrders() { return JSON.parse(localStorage.getItem('placedOrders') || '[]'); }
+
+    function statusInfo(status) {
+      const map = {
+        'Placed':           { cls:'status-processing', icon:'🔄' },
+        'Pending':          { cls:'status-processing', icon:'🔄' },
+        'Processing':       { cls:'status-processing', icon:'🔄' },
+        'Shipped':          { cls:'status-shipped',    icon:'🚚' },
+        'Out for Delivery': { cls:'status-shipped',    icon:'🏃' },
+        'Delivered':        { cls:'status-delivered',  icon:'✅' },
+        'Cancelled':        { cls:'status-cancelled',  icon:'❌' }
+      };
+      return map[status] || map['Placed'];
+    }
+
+    // ── Render Orders ─────────────────────────────────────────────────────────
+    function renderOrders() {
+      const container = document.getElementById('ordersList');
+      const orders    = getOrders().slice().reverse(); // newest first
+
+      // Badge counts
+      const cart     = JSON.parse(localStorage.getItem('cart') || '[]');
+      const wl       = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const cBadge   = document.getElementById('cart-count');
+      const wBadge   = document.getElementById('wishlist-count');
+      if (cBadge) cBadge.textContent = cart.reduce((s,i) => s+(i.quantity||1), 0);
+      if (wBadge) wBadge.textContent = wl.length;
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-orders">
+            <span class="empty-icon">📦</span>
+            <h2>No Orders Yet</h2>
+            <p>You haven't placed any orders. Start exploring our handcrafted collection!</p>
+            <a href="index.html#bestsellers">Shop Now</a>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const si   = statusInfo(order.status);
+        const date = new Date(order.date).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+        const itemsHTML = (order.items || []).map(item => `
+          <div class="order-item-row">
+            <img src="${item.image || 'Images/HandMadeClayPot.jpg'}"
+                 onerror="this.src='Images/HandMadeClayPot.jpg'" alt="${item.name}">
+            <div class="order-item-info">
+              <h3>${item.name}</h3>
+              <p>Qty: ${item.quantity || 1}</p>
+            </div>
+            <div class="order-price">₹ ${Number(item.price * (item.quantity||1)).toLocaleString('en-IN')}</div>
+          </div>`).join('');
+
+        const cancelBtn = (order.status === 'Processing' || order.status === 'Pending' || order.status === 'Placed')
+          ? `<button class="order-btn secondary-btn" onclick="cancelOrder('${order.id}')">Cancel Order</button>` : '';
+
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-id">Order #${order.id}</div>
+              <span class="order-status ${si.cls}">${si.icon} ${order.status}</span>
+              <div class="order-date">📅 ${date}</div>
+            </div>
+            <div class="order-body">
+              <div class="order-items-list">${itemsHTML}</div>
+              <div class="order-total-row">
+                <span>Total Paid</span>
+                <strong>₹ ${Number(order.total).toLocaleString('en-IN')}</strong>
+              </div>
+              <div class="order-actions">
+                <button class="order-btn primary-btn" onclick="trackOrder('${order.id}', '${order.status}')">
+                  📍 Track Order
+                </button>
+                ${cancelBtn}
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Cancel Order ──────────────────────────────────────────────────────────
+    function cancelOrder(orderId) {
+      if (!confirm('Cancel this order?')) return;
+      let orders = getOrders();
+      const o = orders.find(o => String(o.id) === String(orderId));
+      if (o) o.status = 'Cancelled';
+      localStorage.setItem('placedOrders', JSON.stringify(orders));
+      renderOrders();
+    }
+
+    // ── Track Modal ───────────────────────────────────────────────────────────
+    const TRACKING_STEPS = [
+      { label:'Order Placed',      desc:'Your order has been received.',              status:'Placed' },
+      { label:'Packed & Shipped',  desc:'Your order is on its way.',                  status:'Shipped'    },
+      { label:'Out for Delivery',  desc:'Your order will arrive today.',              status:'Out for Delivery'    },
+      { label:'Delivered',         desc:'Your order has been delivered. Enjoy! 🎉',   status:'Delivered'  }
+    ];
+
+    function trackOrder(orderId, status) {
+      const stepMap = { 'Placed':1, 'Processing':1, 'Pending':1, 'Shipped':2, 'Out for Delivery':3, 'Delivered':4, 'Cancelled':0 };
+      const reached = stepMap[status] || 1;
+
+      let stepsHTML = TRACKING_STEPS.map((step, i) => {
+        const stepNum   = i + 1;
+        const isDone    = stepNum < reached;
+        const isActive  = stepNum === reached;
+        const dotCls    = isDone ? 'done' : (isActive ? 'active' : '');
+        const lineCls   = isDone ? 'done' : '';
+        const bodyCls   = isActive ? 'active' : '';
+        const icon      = isDone ? '✓' : (isActive ? '●' : '');
+        const isLast    = i === TRACKING_STEPS.length - 1;
+        return `
+          <div class="track-step">
+            <div class="step-line">
+              <div class="step-dot ${dotCls}">${icon}</div>
+              ${!isLast ? `<div class="step-connector ${lineCls}"></div>` : ''}
+            </div>
+            <div class="step-body ${bodyCls}">
+              <h4>${step.label}</h4>
+              <p>${isActive || isDone ? step.desc : 'Pending...'}</p>
+            </div>
+          </div>`;
+      }).join('');
+
+      if (status === 'Cancelled') {
+        stepsHTML = `<div style="text-align:center;padding:20px;">
+          <span style="font-size:48px">❌</span>
+          <p style="color:#e63946;font-weight:700;font-size:18px;margin-top:12px;">Order Cancelled</p>
+        </div>`;
+      }
+
+      const modal = document.createElement('div');
+      modal.className = 'track-overlay';
+      modal.id = 'trackOverlay';
+      modal.innerHTML = `
+        <div class="track-modal">
+          <h2>📍 Track Order</h2>
+          <p class="track-sub">Order #${orderId} — Current Status: <strong>${status}</strong></p>
+          <div class="track-steps">${stepsHTML}</div>
+          <button class="track-close" onclick="document.getElementById('trackOverlay').remove()">
+            Close
+          </button>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    }
+
+    // ── Mobile Nav ────────────────────────────────────────────────────────────
+    
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    renderOrders();
+  </script>
+</body>
+</html>

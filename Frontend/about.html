@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | ClayCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .about-hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('Images/clay.jpg') no-repeat center center/cover;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+    }
+    .about-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    .about-content {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.8;
+      color: #444;
+      text-align: center;
+    }
+    .about-content h2 {
+      font-family: 'Poppins', sans-serif;
+      color: #222;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+    .about-content p {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+          <nav id="mainNav">
+    <div class="logo" onclick="window.location='index.html'" style="cursor:pointer;">
+      <img src="Images/pottery_hands_logo.png" alt="Claycraft Logo" style="height:40px; width:40px; border-radius:6px; object-fit:cover;">
+      <span style="background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">ClayCraft</span>
+    </div>
+
+    <!-- Desktop search bar -->
+    <div class="search-bar">
+      <div class="search-wrapper" style="max-width: 500px; position: relative;">
+        <input type="text" id="searchInput" placeholder="Search for products">
+        <span id="clearSearchBtn" onclick="document.getElementById('searchInput').value=''; this.style.display='none'; document.getElementById('searchInput').focus();" style="display:none; position:absolute; right: 55px; top: 50%; transform: translateY(-50%); cursor:pointer; font-size: 14px; color:#999; padding:5px;">&#10006;</span>
+        <button id="searchBtn" onclick="triggerSearch(document.getElementById('searchInput').value)" style="font-size:18px; display:flex; align-items:center; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <ul id="navLinks" class="nav-main-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      
+      <!-- Logged Out Links -->
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Login &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-login.html">Customer Login</a>
+          <a href="artisan-login.html">Artisan Login</a>
+          <a href="admin-login.html" id="adminLoginLink">Admin Login</a>
+        </div>
+      </li>
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Register &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-signup.html">Customer</a>
+          <a href="artisan-signup.html">Artisan</a>
+        </div>
+      </li>
+      
+      <!-- Logged In Links -->
+      <li class="dropdown logged-in-only" style="display:none;">
+        <a href="#" id="userNameDisplay" class="dropdown-toggle">Hi, User &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="profile.html">My Profile</a>
+          <a href="myOrder.html">My Orders</a>
+          <a href="wishlist.html" class="cart-link">Wishlist <span id="wishlist-count-dropdown" class="badge">0</span></a>
+          <a href="cart.html" class="cart-link">Cart 🛒 <span id="cart-count-dropdown" class="badge">0</span></a>
+          <a href="#" onclick="logoutUser(event)">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Right-side icons: search toggle + hamburger -->
+    <div style="display:flex; align-items:center; gap:6px;">
+      <!-- Mobile search icon -->
+      <button class="search-toggle-btn" id="searchToggleBtn" aria-label="Toggle search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1 0 4.65 4.65a7 7 0 0 0 12 12z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile search bar (slides in below nav) -->
+  
+  </div>
+
+  <section class="about-hero">
+    <div>
+      <h1>Our Story</h1>
+      <p>Bringing authentic artisan crafts directly to your home.</p>
+    </div>
+  </section>
+
+  <section class="about-content">
+    <h2>Empowering Artisans</h2>
+    <p>ClayCraft was founded with a simple yet powerful mission: to bridge the gap between talented local artisans and people who appreciate authentic, handcrafted art. In a world increasingly dominated by mass-produced items, we celebrate the unique imperfections and soul found in every piece of handmade pottery and sandstone sculpture.</p>
+    <p>Our platform provides artisans with a digital marketplace to showcase their generations-old techniques and artistry. Every purchase directly supports these creators, helping to sustain traditional craftsmanship and empower local communities.</p>
+    <p>We believe that your home should be filled with objects that have a story. Whether it's a beautifully glazed coffee mug or a meticulously carved sandstone idol, our collection is curated to bring warmth, culture, and artistry into your everyday life.</p>
+  </section>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-col brand">
+        <h3>ClayCraft</h3>
+        <p>Authentic handmade crafts — directly from artisans to your home.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="index.html#home-decor">Home Decor</a></li>
+          <li><a href="index.html#new-arrivals">New Arrivals</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Socials</h3>
+        <div class="social-links-list">
+          <a href="https://instagram.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            @claypottery2026
+          </a>
+          <a href="https://facebook.com/claypottery2026" class="social-link" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            @claypottery2026
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 ClayCraft | Designed with @claypottery2026</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Include minimal scripts for nav functionality
+    
+  </script>
+</body>
+</html>

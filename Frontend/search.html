@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - ClayCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+          <nav id="mainNav">
+    <div class="logo" onclick="window.location='index.html'" style="cursor:pointer;">
+      <img src="Images/pottery_hands_logo.png" alt="Claycraft Logo" style="height:40px; width:40px; border-radius:6px; object-fit:cover;">
+      <span style="background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">ClayCraft</span>
+    </div>
+
+    <!-- Desktop search bar -->
+    <div class="search-bar">
+      <div class="search-wrapper" style="max-width: 500px; position: relative;">
+        <input type="text" id="searchInput" placeholder="Search for products">
+        <span id="clearSearchBtn" onclick="document.getElementById('searchInput').value=''; this.style.display='none'; document.getElementById('searchInput').focus();" style="display:none; position:absolute; right: 55px; top: 50%; transform: translateY(-50%); cursor:pointer; font-size: 14px; color:#999; padding:5px;">&#10006;</span>
+        <button id="searchBtn" onclick="triggerSearch(document.getElementById('searchInput').value)" style="font-size:18px; display:flex; align-items:center; justify-content:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <ul id="navLinks" class="nav-main-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      
+      <!-- Logged Out Links -->
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Login &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-login.html">Customer Login</a>
+          <a href="artisan-login.html">Artisan Login</a>
+          <a href="admin-login.html" id="adminLoginLink">Admin Login</a>
+        </div>
+      </li>
+      <li class="dropdown logged-out-only">
+        <a href="#" class="dropdown-toggle">Register &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="customer-signup.html">Customer</a>
+          <a href="artisan-signup.html">Artisan</a>
+        </div>
+      </li>
+      
+      <!-- Logged In Links -->
+      <li class="dropdown logged-in-only" style="display:none;">
+        <a href="#" id="userNameDisplay" class="dropdown-toggle">Hi, User &#9662;</a>
+        <div class="dropdown-menu">
+          <a href="profile.html">My Profile</a>
+          <a href="myOrder.html">My Orders</a>
+          <a href="wishlist.html" class="cart-link">Wishlist <span id="wishlist-count-dropdown" class="badge">0</span></a>
+          <a href="cart.html" class="cart-link">Cart 🛒 <span id="cart-count-dropdown" class="badge">0</span></a>
+          <a href="#" onclick="logoutUser(event)">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Right-side icons: search toggle + hamburger -->
+    <div style="display:flex; align-items:center; gap:6px;">
+      <!-- Mobile search icon -->
+      <button class="search-toggle-btn" id="searchToggleBtn" aria-label="Toggle search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1 0 4.65 4.65a7 7 0 0 0 12 12z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="search-page" style="padding: 40px 20px; min-height: calc(100vh - 200px); background-color: #f9f9f9;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+      <h1 id="search-page-title" style="font-family: 'Poppins', sans-serif; text-align: center; margin-bottom: 30px; color: #222;">Search Results</h1>
+      <div id="searchresults" class="search-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 ClayCraft | Designed with ❤️</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

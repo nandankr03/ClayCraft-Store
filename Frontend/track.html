@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - ClayCraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .tracking-container {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid #333;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            margin-top: 0;
+            color: #e63946;
+            margin-bottom: 5px;
+        }
+        .order-id {
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .status-badge {
+            display: inline-block;
+            background: rgba(230, 57, 70, 0.15);
+            color: #ff6b77;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+        }
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 40px 0;
+            padding: 0 10px;
+        }
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            height: 4px;
+            background: #333;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .progress-fill {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            height: 4px;
+            background: #e63946;
+            transform: translateY(-50%);
+            z-index: 2;
+            width: 0%; /* Dynamic width */
+            transition: width 1s ease-in-out;
+        }
+        .step {
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            z-index: 3;
+            position: relative;
+        }
+        .step.active {
+            background: #e63946;
+            box-shadow: 0 0 10px #e63946;
+        }
+        .step-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: -25px;
+            padding: 0 5px;
+        }
+        .step-label {
+            width: 25%;
+            text-align: center;
+        }
+        .step-label.active {
+            color: #fff;
+            font-weight: 600;
+        }
+        .eta-box {
+            background-color: #252525;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .eta-title {
+            font-size: 13px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .eta-date {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .btn-home {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: transparent;
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid #555;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-home:hover {
+            background-color: #333;
+            border-color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tracking-container">
+        <h1>Track Your Order</h1>
+        <div class="order-id">Order #{{ORDER_ID}}</div>
+        
+        <div class="status-badge" id="statusText">Processing</div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="step active"></div>
+            <div class="step" id="step-shipped"></div>
+            <div class="step" id="step-out"></div>
+            <div class="step" id="step-delivered"></div>
+        </div>
+        
+        <div class="step-labels">
+            <div class="step-label active">Processing</div>
+            <div class="step-label" id="label-shipped">Shipped</div>
+            <div class="step-label" id="label-out">Out for Delivery</div>
+            <div class="step-label" id="label-delivered">Delivered</div>
+        </div>
+
+        <div class="eta-box">
+            <div class="eta-title">Estimated Delivery</div>
+            <div class="eta-date" id="etaDate">Calculating...</div>
+        </div>
+
+        <a href="index.html" class="btn-home">Return to Home</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderId = '{{ORDER_ID}}';
+            
+            // Dummy logic based on order ID string to make it deterministic
+            let charCodeSum = 0;
+            for(let i=0; i<orderId.length; i++) {
+                charCodeSum += orderId.charCodeAt(i);
+            }
+            
+            // Generate a random-looking but deterministic status based on order ID
+            const statuses = ['Processing', 'Shipped', 'Out for Delivery'];
+            let statusIndex = charCodeSum % statuses.length; 
+
+            // Progress bar and active steps logic
+            const fillWidths = ['0%', '33%', '66%', '100%'];
+            
+            // Small delay for smooth animation
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = fillWidths[statusIndex];
+                document.getElementById('statusText').innerText = statuses[statusIndex];
+                
+                if(statusIndex >= 1) { document.getElementById('step-shipped').classList.add('active'); document.getElementById('label-shipped').classList.add('active'); }
+                if(statusIndex >= 2) { document.getElementById('step-out').classList.add('active'); document.getElementById('label-out').classList.add('active'); }
+                if(statusIndex >= 3) { document.getElementById('step-delivered').classList.add('active'); document.getElementById('label-delivered').classList.add('active'); }
+            }, 300);
+
+            // Dummy ETA (5 days from now)
+            const eta = new Date();
+            eta.setDate(eta.getDate() + 5);
+            const options = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('etaDate').innerText = eta.toLocaleDateString('en-US', options);
+        });
+    </script>
+</body>
+</html>

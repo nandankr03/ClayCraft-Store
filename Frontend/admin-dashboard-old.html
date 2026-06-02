@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Dashboard — Review and approve artisan product submissions on ClayCraft.">
+  <title>Admin Dashboard | ClayCraft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --red: #e63946;
+      --dark: #1a1a1a;
+      --light-bg: #f8f8f8;
+      --card-bg: #fff;
+      --border: #eaeaea;
+      --muted: #888;
+      --green: #2ecc71;
+      --green-bg: #d4edda;
+      --green-text: #155724;
+    }
+
+    body { background: var(--light-bg); font-family: "Inter", sans-serif; }
+
+    /* ── Admin Nav ── */
+    .admin-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 68px; background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-nav .logo {
+      font-family: "Poppins", sans-serif; font-size: 22px; font-weight: 800; color: var(--dark);
+    }
+    .admin-nav .logo span { color: var(--red); }
+    .admin-badge {
+      background: rgba(230,57,70,0.1); color: var(--red);
+      font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px;
+    }
+    .admin-nav .nav-right { display:flex; align-items:center; gap:16px; }
+    .logout-btn {
+      background: var(--dark); color: #fff; border: none; padding: 8px 18px;
+      border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.3s;
+    }
+    .logout-btn:hover { background: var(--red); }
+
+    /* ── Page ── */
+    .admin-page { max-width: 1100px; margin: 0 auto; padding: 40px 20px 80px; }
+    .page-title { font-family:"Poppins",sans-serif; font-size:32px; font-weight:800; color:var(--dark); margin-bottom:6px; }
+    .page-title span { color: var(--red); }
+    .page-subtitle { color:var(--muted); font-size:15px; margin-bottom:36px; }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+      gap: 18px; margin-bottom: 36px;
+    }
+    .stat-card {
+      background: var(--card-bg); border-radius: 16px; padding: 22px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: 1px solid var(--border);
+      text-align: center; transition: transform 0.3s;
+    }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-card .stat-icon { font-size: 28px; margin-bottom: 8px; }
+    .stat-card .stat-val { font-family:"Poppins",sans-serif; font-size:28px; font-weight:800; color:var(--red); }
+    .stat-card .stat-label { font-size:12px; color:var(--muted); margin-top:4px; }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex; gap: 6px; background: #f0f0f0;
+      padding: 6px; border-radius: 14px; margin-bottom: 28px;
+      width: fit-content;
+    }
+    .tab-btn {
+      padding: 10px 22px; border: none; border-radius: 10px;
+      background: transparent; font-size: 14px; font-weight: 600;
+      cursor: pointer; color: #666; transition: all 0.25s; font-family:"Inter",sans-serif;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tab-btn.active { background: #fff; color: var(--dark); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .tab-btn .tab-badge {
+      background: var(--red); color: #fff;
+      font-size: 11px; font-weight: 700; padding: 2px 7px;
+      border-radius: 10px; min-width: 20px; text-align: center;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Card ── */
+    .section-card {
+      background: var(--card-bg); border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid var(--border);
+      padding: 36px;
+    }
+    .section-title {
+      font-family:"Poppins",sans-serif; font-size:20px; font-weight:700; color:var(--dark);
+      margin-bottom: 6px;
+    }
+    .section-desc { color:var(--muted); font-size:14px; margin-bottom:28px; }
+
+    /* ── Approval Cards ── */
+    .approval-list { display: flex; flex-direction: column; gap: 16px; }
+    .approval-card {
+      border: 1.5px solid var(--border); border-radius: 16px; padding: 20px;
+      display: flex; align-items: center; gap: 18px;
+      transition: box-shadow 0.3s, border-color 0.3s;
+      background: #fafafa;
+    }
+    .approval-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-color: #ddd; }
+    .approval-card img {
+      width: 72px; height: 72px; object-fit: cover;
+      border-radius: 12px; border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .approval-info { flex: 1; }
+    .approval-info h4 { font-family:"Poppins",sans-serif; font-size:16px; font-weight:700; margin-bottom:4px; }
+    .approval-info .meta {
+      font-size: 13px; color: #666; display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px;
+    }
+    .approval-info .meta span { display:flex; align-items:center; gap:4px; }
+    .approval-actions { display:flex; gap:10px; flex-shrink:0; }
+    .approve-btn, .reject-btn {
+      padding: 9px 20px; border: none; border-radius: 9px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family:"Inter",sans-serif; transition: all 0.25s;
+    }
+    .approve-btn { background: #2ecc71; color: #fff; }
+    .approve-btn:hover { background: #27ae60; transform:translateY(-1px); }
+    .reject-btn  { background: #fff0f0; color: var(--red); border: 1.5px solid #ffd1d1; }
+    .reject-btn:hover  { background: var(--red); color: #fff; }
+
+    /* Type tag */
+    .req-type {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .req-add    { background:#d4edda; color:#155724; }
+    .req-remove { background:#fce4ec; color:#880e4f; }
+
+    /* ── Product Table ── */
+    .product-table-wrapper { overflow-x: auto; }
+    .product-table { width:100%; border-collapse:collapse; font-size:14px; }
+    .product-table th {
+      background:#f5f5f5; padding:12px 16px; text-align:left;
+      font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px;
+      color:#666; border-bottom:1px solid var(--border);
+    }
+    .product-table td { padding:14px 16px; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+    .product-table tr:hover td { background:#fafafa; }
+    .product-table tr:last-child td { border-bottom:none; }
+    .prod-thumb-sm { width:46px; height:46px; object-fit:cover; border-radius:8px; border:1px solid var(--border); }
+
+    /* Pills */
+    .status-pill {
+      display:inline-block; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:600;
+    }
+    .pill-green  { background:var(--green-bg); color:var(--green-text); }
+    .pill-red    { background:#f8d7da; color:#721c24; }
+    .pill-orange { background:#fff3cd; color:#856404; }
+
+    /* Admin direct remove */
+    .tbl-rm-btn {
+      padding:6px 14px; border:1.5px solid #ffd1d1; border-radius:7px;
+      background:#fff0f0; color:var(--red); font-size:13px; font-weight:600;
+      cursor:pointer; transition:all 0.25s; font-family:"Inter",sans-serif;
+    }
+    .tbl-rm-btn:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
+    /* Empty state */
+    .empty-state { text-align:center; padding:50px 20px; color:var(--muted); }
+    .empty-state .empty-icon { font-size:48px; margin-bottom:14px; display:block; }
+
+    /* Toast */
+    #adminToast {
+      position:fixed; bottom:28px; right:28px; background:#1a1a1a; color:#fff;
+      padding:14px 20px; border-radius:12px; font-size:14px; font-weight:500;
+      box-shadow:0 8px 25px rgba(0,0,0,0.18); z-index:9999;
+      display:flex; align-items:center; gap:10px;
+      opacity:0; transform:translateY(20px); transition:opacity .35s,transform .35s;
+    }
+    #adminToast.show { opacity:1; transform:translateY(0); }
+
+    @media(max-width:640px) {
+      .admin-nav { padding:0 16px; }
+      .admin-page { padding:24px 14px 60px; }
+      .section-card { padding:22px; }
+      .approval-card { flex-wrap:wrap; }
+      .approval-actions { width:100%; }
+      .tab-bar { flex-wrap:wrap; width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="admin-nav">
+    <div class="logo"><img src="Images/pottery_hands_logo.png" alt="Claycraft Logo" style="height:40px; width:40px; border-radius:6px; object-fit:cover;">
+      <span style="background: linear-gradient(45deg, #e63946, #d68c45, #3a5a40); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">ClayCraft</span></div>
+    <div class="nav-right">
+      <span class="admin-badge">🛡️ Admin Panel</span>
+      <a href="index.html" style="color:#555;font-size:14px;font-weight:600;text-decoration:none;">View Store</a>
+      <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-page">
+    <h1 class="page-title">Admin <span>Dashboard</span></h1>
+    <p class="page-subtitle">Review artisan product submissions, manage the live store, and keep quality in check.</p>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-val" id="statPendingAdd">0</div>
+        <div class="stat-label">Pending Add</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🗑️</div>
+        <div class="stat-val" id="statPendingRemove">0</div>
+        <div class="stat-label">Pending Removal</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val" id="statLive">0</div>
+        <div class="stat-label">Live Products</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎨</div>
+        <div class="stat-val" id="statArtisans">0</div>
+        <div class="stat-label">Active Artisans</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab1btn" onclick="switchTab(1)">
+        ➕ Add Requests <span class="tab-badge" id="tabBadge1">0</span>
+      </button>
+      <button class="tab-btn" id="tab2btn" onclick="switchTab(2)">
+        🗑️ Remove Requests <span class="tab-badge" id="tabBadge2">0</span>
+      </button>
+      <button class="tab-btn" id="tab3btn" onclick="switchTab(3)">
+        🛍️ All Live Products
+      </button>
+    </div>
+
+    <!-- Tab 1: Pending Add Requests -->
+    <div class="tab-panel active" id="panel1">
+      <div class="section-card">
+        <div class="section-title">Pending Product Add Requests</div>
+        <p class="section-desc">Artisans want to list these products. Approve to make them live or reject to decline.</p>
+        <div class="approval-list" id="addApprovalList"></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Pending Remove Requests -->
+    <div class="tab-panel" id="panel2">
+      <div class="section-card">
+        <div class="section-title">Pending Product Removal Requests</div>
+        <p class="section-desc">Artisans want these products delisted. Approve removal or reject to keep them live.</p>
+        <div class="approval-list" id="removeApprovalList"></div>
+      </div>
+    </div>
+
+    <!-- Tab 3: All Live Products -->
+    <div class="tab-panel" id="panel3">
+      <div class="section-card">
+        <div class="section-title">All Live Products on Store</div>
+        <p class="section-desc">Full view of all artisan-added products currently live. You can directly remove any product here.</p>
+        <div class="product-table-wrapper">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Artisan</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="allLiveBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="adminToast"><span id="adminToastIcon">✅</span><span id="adminToastMsg">Done!</span></div>
+
+  <script>
+    // ── Auth guard ────────────────────────────────────────────────────────────
+    if (localStorage.getItem('userRole') !== 'admin') {
+      alert('Unauthorized! Admin access only.');
+      window.location.href = 'admin-login.html';
+    }
+
+    // ── Tabs ──────────────────────────────────────────────────────────────────
+    function switchTab(n) {
+      [1,2,3].forEach(i => {
+        document.getElementById('panel' + i).classList.toggle('active', i === n);
+        document.getElementById('tab' + i + 'btn').classList.toggle('active', i === n);
+      });
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, icon = '✅') {
+      document.getElementById('adminToastMsg').textContent = msg;
+      document.getElementById('adminToastIcon').textContent = icon;
+      const t = document.getElementById('adminToast');
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function getPending()   { return JSON.parse(localStorage.getItem('pendingProducts') || '[]'); }
+    function getApproved()  { return JSON.parse(localStorage.getItem('customProducts')  || '[]'); }
+    function savePending(a) { localStorage.setItem('pendingProducts', JSON.stringify(a)); }
+    function saveApproved(a){ localStorage.setItem('customProducts',  JSON.stringify(a)); }
+
+    function pendingAdd()    { return getPending().filter(p => p.requestType !== 'remove'); }
+    function pendingRemove() { return getPending().filter(p => p.requestType === 'remove'); }
+
+    // ── Render Stats ──────────────────────────────────────────────────────────
+    function renderStats() {
+      const live    = getApproved().filter(p => p.status === 'approved');
+      const pAdd    = pendingAdd();
+      const pRemove = pendingRemove();
+      const artisans = [...new Set(live.map(p => p.artisanEmail).filter(Boolean))].length;
+      document.getElementById('statPendingAdd').textContent    = pAdd.length;
+      document.getElementById('statPendingRemove').textContent = pRemove.length;
+      document.getElementById('statLive').textContent          = live.length;
+      document.getElementById('statArtisans').textContent      = artisans;
+      document.getElementById('tabBadge1').textContent = pAdd.length;
+      document.getElementById('tabBadge2').textContent = pRemove.length;
+    }
+
+    // ── Render Add Requests ───────────────────────────────────────────────────
+    function renderAddRequests() {
+      const list = pendingAdd();
+      const el   = document.getElementById('addApprovalList');
+      if (list.length === 0) {
+        el.innerHTML = `<div class="empty-state">
+          <span class="empty-icon">🎉</span>
+          <p>No pending add requests. All caught up!</p></div>`;
+        return;
+      }
+      el.innerHTML = list.map(p => `
+        <div class="approval-card" id="ac-${p.id}">
+          <img src="${p.image || 'Images/HandMadeClayPot.jpg'}"
+               onerror="this.src='Images/HandMadeClayPot.jpg'" alt="${p.name}">
+          <div class="approval-info">
+            <h4>${p.name}</h4>
+            <div style="margin-bottom:6px;">
+              <span class="req-type req-add">➕ New Product</span>
+            </div>
+            <div class="meta">
+              <span>🎨 <b>${p.artisan || p.artisanEmail || 'Artisan'}</b></span>
+              <span>💰 ₹ ${Number(p.price).toLocaleString('en-IN')}</span>
+              <span>📦 Qty: <b>${p.quantity || '?'}</b></span>
+              <span>🗂 ${p.category || 'General'}</span>
+              <span style="color:#aaa;">🕐 ${new Date(p.submittedAt || Date.now()).toLocaleDateString('en-IN')}</span>
+            </div>
+            ${p.description ? `<p style="font-size:13px;color:#777;margin-top:8px;">${p.description}</p>` : ''}
+          </div>
+          <div class="approval-actions">
+            <button class="approve-btn" onclick="approveAdd('${p.id}')">✅ Approve</button>
+            <button class="reject-btn"  onclick="rejectPending('${p.id}')">❌ Reject</button>
+          </div>
+        </div>`).join('');
+    }
+
+    // ── Render Remove Requests ────────────────────────────────────────────────
+    function renderRemoveRequests() {
+      const list = pendingRemove();
+      const el   = document.getElementById('removeApprovalList');
+      if (list.length === 0) {
+        el.innerHTML = `<div class="empty-state">
+          <span class="empty-icon">✨</span>
+          <p>No pending removal requests.</p></div>`;
+        return;
+      }
+      el.innerHTML = list.map(p => `
+        <div class="approval-card" id="rc-${p.id}">
+          <img src="${p.image || 'Images/HandMadeClayPot.jpg'}"
+               onerror="this.src='Images/HandMadeClayPot.jpg'" alt="${p.name}">
+          <div class="approval-info">
+            <h4>${p.name}</h4>
+            <div style="margin-bottom:6px;">
+              <span class="req-type req-remove">🗑️ Removal Request</span>
+            </div>
+            <div class="meta">
+              <span>🎨 <b>${p.artisan || p.artisanEmail || 'Artisan'}</b></span>
+              <span>💰 ₹ ${Number(p.price).toLocaleString('en-IN')}</span>
+              <span>📦 Qty: <b>${p.quantity || '?'}</b></span>
+              <span style="color:#aaa;">🕐 ${new Date(p.submittedAt || Date.now()).toLocaleDateString('en-IN')}</span>
+            </div>
+          </div>
+          <div class="approval-actions">
+            <button class="approve-btn" onclick="approveRemoval('${p.id}', '${p.originalId}')">✅ Approve Removal</button>
+            <button class="reject-btn"  onclick="rejectPending('${p.id}')">❌ Keep Live</button>
+          </div>
+        </div>`).join('');
+    }
+
+    // ── Render All Live Products ──────────────────────────────────────────────
+    function renderAllLive() {
+      const live  = getApproved().filter(p => p.status === 'approved');
+      const tbody = document.getElementById('allLiveBody');
+      if (live.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">
+          <div class="empty-state">
+            <span class="empty-icon">🏺</span>
+            <p>No artisan products live yet. Approve some submissions!</p>
+          </div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = live.map(p => `
+        <tr>
+          <td><img src="${p.image || 'Images/HandMadeClayPot.jpg'}" class="prod-thumb-sm"
+               onerror="this.src='Images/HandMadeClayPot.jpg'" alt="${p.name}"></td>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.artisan || p.artisanEmail || '-'}</td>
+          <td style="color:#e63946;font-weight:700;">₹ ${Number(p.price).toLocaleString('en-IN')}</td>
+          <td>${p.quantity || '-'}</td>
+          <td>${p.category || 'General'}</td>
+          <td>
+            <button class="tbl-rm-btn" onclick="adminDirectRemove('${p.id}')">🗑️ Remove</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    // ── Full Re-render ────────────────────────────────────────────────────────
+    function renderAll() {
+      renderStats();
+      renderAddRequests();
+      renderRemoveRequests();
+      renderAllLive();
+    }
+
+    // ── Approve: Add ──────────────────────────────────────────────────────────
+    function approveAdd(id) {
+      let pending  = getPending();
+      const idx    = pending.findIndex(p => String(p.id) === String(id));
+      if (idx === -1) return;
+      const product = { ...pending[idx], status: 'approved' };
+      delete product.requestType;
+      delete product.submittedAt;
+
+      const approved = getApproved();
+      approved.push(product);
+      saveApproved(approved);
+
+      pending.splice(idx, 1);
+      savePending(pending);
+
+      showToast(`"${product.name}" approved & is now LIVE! 🎉`, '✅');
+      renderAll();
+    }
+
+    // ── Approve: Remove ───────────────────────────────────────────────────────
+    function approveRemoval(pendingId, originalId) {
+      // Remove the pending removal request
+      let pending = getPending();
+      const removal = pending.find(p => String(p.id) === String(pendingId));
+      pending = pending.filter(p => String(p.id) !== String(pendingId));
+      savePending(pending);
+
+      // Remove from live products (match by originalId if available)
+      let approved = getApproved();
+      const before = approved.length;
+      approved = approved.filter(p =>
+        String(p.id) !== String(originalId) && String(p.id) !== String(pendingId)
+      );
+      saveApproved(approved);
+
+      showToast(`Product removed from store 🗑️`, '🗑️');
+      renderAll();
+    }
+
+    // ── Reject any pending ────────────────────────────────────────────────────
+    function rejectPending(id) {
+      if (!confirm('Reject this request?')) return;
+      let pending = getPending().filter(p => String(p.id) !== String(id));
+      savePending(pending);
+      showToast('Request rejected.', '❌');
+      renderAll();
+    }
+
+    // ── Admin Direct Remove ───────────────────────────────────────────────────
+    function adminDirectRemove(id) {
+      if (!confirm('Remove this product from the live store immediately?')) return;
+      let approved = getApproved().filter(p => String(p.id) !== String(id));
+      saveApproved(approved);
+      showToast('Product removed from store.', '🗑️');
+      renderAll();
+    }
+
+    // ── Logout ────────────────────────────────────────────────────────────────
+    function logoutAdmin() {
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'index.html';
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    renderAll();
+  </script>
+</body>
+</html>
