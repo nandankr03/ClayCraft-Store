@@ -468,7 +468,8 @@ app.get('/track-order', (req, res) => {
 });
 
   // SERVER START
-  app.listen(5000, () => {
-    console.log("Server running on port 5000");
-    console.log("Visit http://localhost:5000 in your browser to see the website.");
-  });
+  const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
