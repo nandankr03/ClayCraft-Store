@@ -24,10 +24,11 @@ app.use('/images', express.static(path.join(__dirname, '../Frontend/Images')));
 
 // database connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "nandan@95728",
-  database: "clay_pottery"
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
 
 db.connect((err) => {
