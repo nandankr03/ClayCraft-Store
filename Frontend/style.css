@@ -2278,12 +2278,8 @@ html {
     font-size: 22px;
   }
 
-  /* Hide the desktop search and nav links */
+  /* Hide the desktop search */
   .search-bar {
-    display: none;
-  }
-
-  .nav-main-links {
     display: none;
   }
   
@@ -3027,28 +3023,61 @@ nav#mainNav .search-wrapper button:hover {
   }
 }
 
-/* Responsive Overrides */
+/* Responsive Overrides - Unified Mobile Navigation Fix */
 @media (max-width: 992px) {
-  
   
   /* Reset Search Bar for Mobile */
   nav#mainNav .search-bar {
-    display: none; /* Hide desktop search on mobile */
+    display: none !important; /* Force hide desktop search on mobile to prevent navbar overflow */
   }
 
+  /* Force consistent sidebar container properties */
+  #navLinks,
   #navLinks.nav-main-links {
-    gap: 0 !important; /* Reset gap for mobile sidebar */
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 15px !important;
+    width: 280px !important;
+    padding: 80px 24px 40px !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
   }
   
+  /* Ensure all list items span full width and reset margins */
+  #navLinks > li,
+  #navLinks.nav-main-links > li {
+    width: 100% !important;
+    margin: 0 !important; /* Prevent margin-left: auto from pushing items off-screen */
+    display: block !important; /* Override JS inline-block */
+    text-align: left !important;
+  }
+
+  /* Reset all anchor tags inside the mobile menu (including Login/Register) */
+  #navLinks.nav-main-links > li > a,
   #navLinks.nav-main-links > li > a.nav-item {
     border: none !important;
     border-radius: 0 !important;
     background: transparent !important;
     color: #1a1a1a !important;
-    padding: 14px 24px !important;
+    padding: 14px 20px !important;
     font-weight: 500 !important;
     display: block !important;
     width: 100% !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Force dropdown menus to flow natively in the sidebar */
+  #navLinks .dropdown-menu {
+    position: static !important;
+    box-shadow: none !important;
+    transform: none !important;
+    margin-top: 0 !important;
+    background: #f9f9f9 !important;
+    border-left: 3px solid #e63946 !important;
+    border-radius: 0 !important;
+    padding-left: 12px !important;
   }
 }
 
@@ -3179,10 +3208,12 @@ nav#mainNav .search-wrapper button {
 /* Center Search Bar perfectly */
 
 
-nav#mainNav .search-bar {
-  flex: 1 !important;
-  display: flex !important;
-  justify-content: center !important;
+@media (min-width: 993px) {
+  nav#mainNav .search-bar {
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
 }
 
 nav#mainNav .search-wrapper {
@@ -3222,31 +3253,33 @@ nav#mainNav .search-wrapper button {
 }
 
 /* 2. Login as text, Register as button */
-#navLinks.nav-main-links {
-  gap: 20px !important;
-}
+@media (min-width: 993px) {
+  #navLinks.nav-main-links {
+    gap: 20px !important;
+  }
 
-#navLinks.nav-main-links > li:nth-child(4) > a.nav-item {
-  border: none !important;
-  background: transparent !important;
-  color: #333 !important;
-  font-weight: 500 !important;
-  padding: 8px 12px !important;
-}
-#navLinks.nav-main-links > li:nth-child(4) > a.nav-item:hover {
-  color: #e63946 !important;
-}
+  #navLinks.nav-main-links > li:nth-child(4) > a.nav-item {
+    border: none !important;
+    background: transparent !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    padding: 8px 12px !important;
+  }
+  #navLinks.nav-main-links > li:nth-child(4) > a.nav-item:hover {
+    color: #e63946 !important;
+  }
 
-#navLinks.nav-main-links > li:nth-child(5) > a.nav-item {
-  background: #e63946 !important;
-  border: none !important;
-  border-radius: 20px !important;
-  padding: 8px 24px !important;
-  color: #fff !important;
-  font-weight: 600 !important;
-}
-#navLinks.nav-main-links > li:nth-child(5) > a.nav-item:hover {
-  background: #d62828 !important;
+  #navLinks.nav-main-links > li:nth-child(5) > a.nav-item {
+    background: #e63946 !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 24px !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+  }
+  #navLinks.nav-main-links > li:nth-child(5) > a.nav-item:hover {
+    background: #d62828 !important;
+  }
 }
 
 /* 3. Dropdown styling without hover flickering */
